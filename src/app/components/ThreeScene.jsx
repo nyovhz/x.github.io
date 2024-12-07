@@ -88,7 +88,7 @@ const Cube = () => {
 
       // Crear cuaternión con ángulos suavizados
       const quaternion = new THREE.Quaternion();
-      const euler = new THREE.Euler(-smoothGamma, smoothBeta, -smoothAlpha, 'YXZ');
+      const euler = new THREE.Euler(-smoothGamma, smoothBeta, 0, 'YXZ');
       quaternion.setFromEuler(euler);
       camera.quaternion.copy(quaternion);
 
