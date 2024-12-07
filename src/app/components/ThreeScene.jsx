@@ -1,8 +1,8 @@
-// Cube.js
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-const Cube = () => {
+const Scene = () => {
   const mountRef = useRef(null);
 
   let alpha = 0;
@@ -42,18 +42,35 @@ const Cube = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     mountRef.current.appendChild(renderer.domElement);
 
-    // Crear el cubo
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshBasicMaterial({
-      color: 0x00ff00,
-      wireframe: true,
-    });
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
+    // Luz
+    const light = new THREE.AmbientLight(0x404040); // Luz ambiental
+    scene.add(light);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Luz direccional
+    directionalLight.position.set(5, 5, 5);
+    scene.add(directionalLight);
+
+    // Cargar modelo GLTF
+    const loader = new GLTFLoader();
+    let model = null;
+
+    loader.load(
+      '/hallway.glb',  // Cambia esto a la ruta de tu archivo GLTF
+      (gltf) => {
+        model = gltf.scene;
+        scene.add(model);
+      },
+      // Progreso de carga
+      (xhr) => {
+        console.log((xhr.loaded / xhr.total) * 100 + '% cargado');
+      },
+      // Error de carga
+      (error) => {
+        console.error('Error al cargar el modelo:', error);
+      }
+    );
 
     // Posiciones iniciales
-    cube.position.set(0, 0, 0);
-    camera.position.z = 5;
+    //camera.position.z = 5;
 
     let prevBeta = 0;
     let prevGamma = 0;
@@ -69,32 +86,32 @@ const Cube = () => {
     // Animación
     const animate = () => {
       requestAnimationFrame(animate);
-    
+
       // Convertir a radianes
       const alphaRad = THREE.MathUtils.degToRad(alpha);
       const betaRad = THREE.MathUtils.degToRad(beta);
       const gammaRad = THREE.MathUtils.degToRad(gamma);
-    
+
       // Normalizar cambios
       const deltaBeta = normalizeAngle(betaRad - prevBeta);
       const deltaGamma = normalizeAngle(gammaRad - prevGamma);
       const deltaAlpha = normalizeAngle(alphaRad - prevAlpha);
-    
+
       // Suavizar movimientos
       const smoothingFactor = 0.1;
       const smoothBeta = prevBeta + deltaBeta * smoothingFactor;
       const smoothGamma = prevGamma + deltaGamma * smoothingFactor;
-    
-      // Crear cuaternión con ángulos suavizados (sin usar alpha para rotación en Z)
+
+      // Crear cuaternión con ángulos suavizados
       const quaternion = new THREE.Quaternion();
-      const euler = new THREE.Euler(smoothBeta,-smoothGamma, 0, 'YXZ'); // '0' fija la rotación en Z
+      const euler = new THREE.Euler(smoothBeta, -smoothGamma, 0, 'YXZ'); // '0' fija la rotación en Z
       quaternion.setFromEuler(euler);
       camera.quaternion.copy(quaternion);
-    
+
       // Guardar valores para el siguiente frame
       prevBeta = smoothBeta;
       prevGamma = smoothGamma;
-    
+
       renderer.render(scene, camera);
     };
     animate();
@@ -120,4 +137,4 @@ const Cube = () => {
   return <div ref={mountRef} />;
 };
 
-export default Cube;
+export default Scene;

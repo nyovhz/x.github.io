@@ -1,6 +1,6 @@
 'use client'
 import ThreeScene from './components/ThreeScene';
-import Gyroscope from './hooks/gyro'
+import Gyroscope from './components/gyro'
 
 export default function Home() {
   const { motionData,isGyroscopeAvailable, } = Gyroscope();
