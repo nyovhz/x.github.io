@@ -54,7 +54,7 @@ const Scene = () => {
     let model = null;
 
     loader.load(
-      './models/hallway.glb',  // Cambia esto a la ruta de tu archivo GLTF
+      './hallway.glb',  // Cambia esto a la ruta de tu archivo GLTF
       (gltf) => {
         model = gltf.scene;
         scene.add(model);
