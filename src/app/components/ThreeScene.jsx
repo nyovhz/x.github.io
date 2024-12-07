@@ -69,34 +69,32 @@ const Cube = () => {
     // Animación
     const animate = () => {
       requestAnimationFrame(animate);
-
+    
       // Convertir a radianes
       const alphaRad = THREE.MathUtils.degToRad(alpha);
       const betaRad = THREE.MathUtils.degToRad(beta);
       const gammaRad = THREE.MathUtils.degToRad(gamma);
-
+    
       // Normalizar cambios
       const deltaBeta = normalizeAngle(betaRad - prevBeta);
       const deltaGamma = normalizeAngle(gammaRad - prevGamma);
       const deltaAlpha = normalizeAngle(alphaRad - prevAlpha);
-
+    
       // Suavizar movimientos
       const smoothingFactor = 0.1;
       const smoothBeta = prevBeta + deltaBeta * smoothingFactor;
       const smoothGamma = prevGamma + deltaGamma * smoothingFactor;
-      const smoothAlpha = prevAlpha + deltaAlpha * smoothingFactor;
-
-      // Crear cuaternión con ángulos suavizados
+    
+      // Crear cuaternión con ángulos suavizados (sin usar alpha para rotación en Z)
       const quaternion = new THREE.Quaternion();
-      const euler = new THREE.Euler(-smoothGamma, smoothBeta, -smoothAlpha, 'YXZ');
+      const euler = new THREE.Euler(-smoothGamma, smoothBeta, 0, 'YXZ'); // '0' fija la rotación en Z
       quaternion.setFromEuler(euler);
       camera.quaternion.copy(quaternion);
-
+    
       // Guardar valores para el siguiente frame
       prevBeta = smoothBeta;
       prevGamma = smoothGamma;
-      prevAlpha = smoothAlpha;
-
+    
       renderer.render(scene, camera);
     };
     animate();
