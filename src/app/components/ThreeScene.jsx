@@ -4,6 +4,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 const Scene = () => {
   const mountRef = useRef(null);
+  const scrollPercentRef = useRef(0);
 
   let alpha = 0;
   let beta = 0;
@@ -69,6 +70,18 @@ const Scene = () => {
       }
     );
 
+
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercentValue = (scrollTop / docHeight) * -100;
+      scrollPercentRef.current = scrollPercentValue; 
+      console.log(scrollPercentValue);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    
+
     // Posiciones iniciales
     //camera.position.z = 5;
 
@@ -86,6 +99,7 @@ const Scene = () => {
     // Animación
     const animate = () => {
       requestAnimationFrame(animate);
+      camera.position.z = scrollPercentRef.current * 0.3;
 
       // Convertir a radianes
       const alphaRad = THREE.MathUtils.degToRad(alpha);

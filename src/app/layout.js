@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
    
       <body
-        className={`${trenchFont.variable} antialiased select-none`}
+        className={`${trenchFont.variable} antialiased`}
       >
         {children}
       

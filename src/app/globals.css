@@ -2,34 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: var(--font-trench, Helvetica, sans-serif);
-  font-size: 1rem;
-  margin: 0%;
-  overflow: hidden;
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 }
 
+body {
+  background-color: black;
+}
+
 .gyro_data {
   position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;margin: 0;
   padding: 15px;
+  overflow: scroll;
+}
+
+.Container {
+  background-color: brown;
+  position: absolute; 
+  width: 90%;
+  height: 90%;
+  margin: 5%;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 200%; /* Dobla la altura para forzar el scroll */
+  overflow: scroll;
+  -ms-overflow-style: none;  /* Oculta barras en IE y Edge */
+  scrollbar-width: none; 
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw; /* Ocupar toda la ventana */
+  height: 100vh; /* Ocupar toda la ventana */
+  z-index: 1; /* Asegura que esté en la parte superior */
+  pointer-events: none; /* Permite el scroll y la interacción con el contenido subyacente */
+}
+::-webkit-scrollbar {
+  display: none; /* Oculta las barras en navegadores basados en WebKit (Chrome, Safari) */
 }
