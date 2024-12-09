@@ -102,29 +102,33 @@ const Scene = () => {
       camera.position.z = scrollPercentRef.current * 0.3;
 
       // Convertir a radianes
-      const alphaRad = THREE.MathUtils.degToRad(alpha);
-      const betaRad = THREE.MathUtils.degToRad(beta);
-      const gammaRad = THREE.MathUtils.degToRad(gamma);
+  const alphaRad = THREE.MathUtils.degToRad(alpha);
+  const betaRad = THREE.MathUtils.degToRad(beta);
+  const gammaRad = THREE.MathUtils.degToRad(gamma);
 
-      // Normalizar cambios
-      const deltaBeta = normalizeAngle(betaRad - prevBeta);
-      const deltaGamma = normalizeAngle(gammaRad - prevGamma);
-      const deltaAlpha = normalizeAngle(alphaRad - prevAlpha);
+  // Ajustar el offset para beta
+  const betaOffset = THREE.MathUtils.degToRad(45); // Offset para alinear con beta = 45°
+  const adjustedBeta = betaRad - betaOffset;
 
-      // Suavizar movimientos
-      const smoothingFactor = 0.1;
-      const smoothBeta = prevBeta + deltaBeta * smoothingFactor;
-      const smoothGamma = prevGamma + deltaGamma * smoothingFactor;
+  // Normalizar cambios
+  const deltaBeta = normalizeAngle(adjustedBeta - prevBeta);
+  const deltaGamma = normalizeAngle(gammaRad - prevGamma);
+  const deltaAlpha = normalizeAngle(alphaRad - prevAlpha);
 
-      // Crear cuaternión con ángulos suavizados
-      const quaternion = new THREE.Quaternion();
-      const euler = new THREE.Euler(smoothBeta, -smoothGamma, 0, 'YXZ'); // '0' fija la rotación en Z
-      quaternion.setFromEuler(euler);
-      camera.quaternion.copy(quaternion);
+  // Suavizar movimientos
+  const smoothingFactor = 0.1;
+  const smoothBeta = prevBeta + deltaBeta * smoothingFactor;
+  const smoothGamma = prevGamma + deltaGamma * smoothingFactor;
 
-      // Guardar valores para el siguiente frame
-      prevBeta = smoothBeta;
-      prevGamma = smoothGamma;
+  // Crear cuaternión con ángulos suavizados
+  const quaternion = new THREE.Quaternion();
+  const euler = new THREE.Euler(smoothBeta, -smoothGamma, 0, 'YXZ'); // 'YXZ' orden de ejes
+  quaternion.setFromEuler(euler);
+  camera.quaternion.copy(quaternion);
+
+  // Guardar valores para el siguiente frame
+  prevBeta = smoothBeta;
+  prevGamma = smoothGamma;
 
       renderer.render(scene, camera);
     };
